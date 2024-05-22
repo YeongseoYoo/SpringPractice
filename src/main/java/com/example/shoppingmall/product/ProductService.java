@@ -1,5 +1,7 @@
 package com.example.shoppingmall.product;
 
+import com.example.shoppingmall.member.Member;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -10,13 +12,16 @@ public class ProductService {
     ProductRepository productRepository;
 
 
-    public Product registerProduct(Product product) {
-        System.out.println("/prodicts _ service");
+    @Transactional
+    public String join(Product product) {
+        productRepository.save(product);
 
-        return productRepository.save(product);
+        String name = productRepository
+                .findByName(product.getName())
+                .getName();
+
+        return name;
     }
 
-    public Product findProduct(int id) {
-        return productRepository.findProduct(id);
-    }
+
 }
