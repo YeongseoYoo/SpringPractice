@@ -8,15 +8,15 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 public class MemberService {
 
-    MemberRepository memberRepository;
+    private MemberJPARepository memberJPARepository;
 
     @Transactional
     public String join(Member member) {
-        memberRepository.save(member);
+        memberJPARepository.save(member);
 
-        String userId = memberRepository
+        String userId = memberJPARepository
                 .findByUserId(member.getUserId())
-                .getUserId();
+                .map(Member::getUserId).orElseThrow(()->new IllegalStateException("User ID not found after save"));
 
         System.out.println("예외처리를 해도 트랜잭션은 마무리 될까요?");
 
@@ -24,12 +24,14 @@ public class MemberService {
     }
 
     public boolean checkDuplicateId(String userId) {
-        Member existMember
-                = memberRepository.findByUserId(userId);
 
-        if (existMember == null)
-            return false;
-        else
-            return true;
+        return memberJPARepository.findByUserId(userId).isPresent();
+//        Member existMember
+//                = memberRepository.findByUserId(userId);
+//
+//        if (existMember == null)
+//            return false;
+//        else
+//            return true;
     }
 }

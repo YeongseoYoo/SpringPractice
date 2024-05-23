@@ -64,6 +64,8 @@ public class MemberController {
         return success(userId);
     }
 
+
+
     private boolean isDuplicateId(MemberDto memberDto) {
         return memberService.checkDuplicateId(memberDto.getUserId());
     }
