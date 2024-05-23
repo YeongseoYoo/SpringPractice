@@ -9,18 +9,21 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor //생성자 코드를 안 써줘도 된다!
 public class ProductService {
 
-    ProductRepository productRepository;
-
+    ProductJPARepository productJPARepository;
 
     @Transactional
     public String join(Product product) {
-        productRepository.save(product);
+        productJPARepository.save(product);
 
-        String name = productRepository
+        String name = productJPARepository
                 .findByName(product.getName())
-                .getName();
+                .map(Member::getNAme).orElseThrow(()->new IllegalStateException("User ID not found after save"));
 
         return name;
+    }
+
+    public boolean checkDuplicated(String name){
+        return productJPARepository.findByName(name).isPresent();
     }
 
 
